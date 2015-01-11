@@ -61,8 +61,20 @@ document.addEventListener("DOMContentLoaded", function(event) {
 });
 
 function plot(uniques, minlen, amount, common) {
-	if (typeof amount === "undefined") { amount = 20; };
-	if (typeof common === "undefined") { common = true; };
+	if (typeof amount === "undefined" && document.getElementById('amount').value === 20) { 
+		amount = 20; 
+	} else {
+		amount = document.getElementById('amount').value
+	}
+
+	if (typeof common === "undefined" && !document.getElementById("common").checked) { 
+		common = true;
+	} else {
+		common = !document.getElementById("common").checked;
+	}
+
+	if (document.getElementById('min').value !== minlen) { minlen = document.getElementById('min').value};
+
 	if (document.getElementsByClassName("bubble")[0]){
 		document.getElementsByClassName("bubble")[0].remove();
 	}
