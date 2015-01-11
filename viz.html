@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+text {
+  font: 20px sans-serif;
+}
+
+body{
+	font-family: sans-serif;
+}
+
+.node:first-child circle {
+	fill: rgb(255, 255, 255) !important;
+}
+
+.node:first-child text {
+	display: none;
+}
+
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="viz.js"></script>
+<h1>Most common words in <select id="sub"><option value="pics" selected>/r/pics</option><option value="askreddit">/r/askreddit</option></select> comments</h1>
+<p id="stats"></p>
+<p id="info"></p>
+<form id="opts">
+	<label>Minimum word length: <input type="number" value="3" id="min"/></label>
+	<label>Number of words: <input type="number" value="20" id="amount"/></label>
+	<label>Allow common words? <input type="checkbox" id="common"/></label>
+	<input type="submit" value="Update" />
+</form>
+</body>
+</html>
