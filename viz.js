@@ -8,24 +8,8 @@
 			d3.text("comments_"+ sub +".txt", function(err, txt){
 				info("getting comments");
 				var words = txt.split(/\s|\r\n|\r|\n/);
-				var temp = [];
 				info("formatting text");
-				words = words.map(function(word){//peliminary data normilization. A lot of pointless stuff gets reduced to "" or " ", which is kinda nice.
-					var a = word.toLowerCase()
-					.replace(/[h|f]t+ps?/g, "")//removes http/https/ftp
-					.replace(/www\.?|\.com/g, "")
-					.replace(/\/?(r|u|message)\/\w+/g,"")
-					.replace(/\d+|\\|\/|\&((gt|lt|amp)\;)+/g, " ")//replaces digits and slashes with spaces, also &gt|lt|amp;
-					.replace(/[^A-Za-z|\'|\"]/g, " ")
-					.replace(/\'|\"/g,"")
-					.trim().split(" ");
-					if (a.length > 0) temp = temp.concat(a.slice(1,a.length));
-					return a[0];
-				});
-				words = words.concat(temp);
-				words = words = words.filter(function(x){//filter out spaces
-					if (x !== "" || x !== " ") { return x; }
-				});
+				words = format(words);
 				info("counting words");
 				for (var i = 0; i < words.length; i++) {
 					if (!words[i].match(/\d/)) {
@@ -54,6 +38,7 @@
 	});
 
 	function plot(uniques, minlen, amount, common) {
+		var userfilter = {};
 		if (typeof amount === "undefined" && elem('amount').value === 20) { 
 			amount = 20; 
 		} else {
@@ -68,6 +53,13 @@
 
 		if (elem('min').value !== minlen) { minlen = elem('min').value};
 
+		if (elem('filter').value !== ''){
+			values = elem('filter').value.split(" ");
+			for (var i = values.length - 1; i >= 0; i--) {
+				userfilter[values[i]] = values[i];
+			}
+		}
+
 		if (document.getElementsByClassName("bubble")[0]){
 			document.getElementsByClassName("bubble")[0].remove();
 		}
@@ -75,11 +67,14 @@
 			workers[0].terminate();
 			workers.pop();
 		}
-		info("culling results");
+		info("filtering results");
 		if (!window.Worker) {
 			var words = []
 			//we have to duplicate the worker code on the off chance a browser doesn't support webworkers
 			//I'm looking at you IE
+			//actually I don't even know if this will work in IE...
+			//oh apprently this does work in IE >= 10...
+			//maybe, just maybe, I can remove this... 
 			var common = {"the":"the", "be":"be", "to":"to", "of":"of", 
 						"and":"and", "a":"a", "in":"in", "that":"that", 
 						"have":"have", "i":"i", "it":"it", "for":"for", 
@@ -110,17 +105,17 @@
 			for (var i = 0; i < keys.length; i++) {
 				var k = keys[i];
 				var v = m.data.data[keys[i]];
-				if (!(m.data.common == true && k in common || k.length < m.data.minlen)){
+				if (!(common == true && k in common || k in userfilter || k.length < m.data.minlen)){
 					words.push({word:k, value:v});
 				}
 				i++;
-				info("culled: "+((i/keys.length)*100).toString().slice(0,5)+"%");
+				info("filtered: "+((i/keys.length)*100).toString().slice(0,5)+"%");
 			}
 			draw(words);
 		} else {
 			var worker = new Worker("cull.js");
 			workers.push(worker);
-			worker.postMessage({data:uniques, minlen:minlen, common:common});
+			worker.postMessage({data:uniques, minlen:minlen, common:common, userfilter:userfilter});
 			worker.onmessage = function(m){
 				if (m.data.status == "info") {
 					info(m.data.data);
@@ -172,17 +167,31 @@
 		}
 	}
 
+	function format(words){
+		var temp = [];
+		words = words.map(function(word){//peliminary data normilization. A lot of pointless stuff gets reduced to "" or " ", which is kinda nice.
+			var a = word.toLowerCase()
+			.replace(/[h|f]t+ps?/g, "")//removes http/https/ftp
+			.replace(/www\.?|\.com/g, "")
+			.replace(/\/?(r|u|message)\/\w+/g,"")
+			.replace(/\d+|\\|\/|\&((gt|lt|amp)\;)+/g, " ")//replaces digits and slashes with spaces, also &gt|lt|amp;
+			.replace(/[^A-Za-z|\'|\"]/g, " ")
+			.replace(/\'|\"/g,"")
+			.trim().split(" ");
+			if (a.length > 0) temp = temp.concat(a.slice(1,a.length));
+			return a[0];
+		});
+		words = words.concat(temp);
+		words = words = words.filter(function(x){//filter out spaces
+			if (x !== "" || x !== " ") { return x; }
+		});
+		return words;
+	}
+
 	function elem(elem){
 		return document.getElementById(elem);
 	}
-
-	/**
-	var txt = document.createElement("textarea");
-	String.prototype.decodeHtml = function() {
-		txt.innerHTML = this;
-		return txt.value;
-	}
-	**/
+	window.elem = elem;
 	
 	function info(a){
 		elem('info').textContent = a;

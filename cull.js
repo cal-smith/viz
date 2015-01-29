@@ -1,6 +1,6 @@
 onmessage = function(m){
-	postMessage({status:"info", data:"culling initiated"});
-	var words = []
+	postMessage({status:"info", data:"filtering initiated"});
+	var words = [];
 	var common = {"the":"the", "be":"be", "to":"to", "of":"of", 
 				"and":"and", "a":"a", "in":"in", "that":"that", 
 				"have":"have", "i":"i", "it":"it", "for":"for", 
@@ -26,16 +26,17 @@ onmessage = function(m){
 				"way":"way", "even":"even", "new":"new", "want":"want", 
 				"because":"because", "any":"any", "these":"these", "give":"give", 
 				"day":"day", "most":"most", "us":"us"};
-	var keys = m.data.data
+	var keys = m.data.data;
+	var userfilter = m.data.userfilter;
 	var len = Object.keys(keys).length;
 	var i = 0;
 	for (k in keys) {
 		var v = keys[k];
-		if (!(m.data.common == true && k in common || k.length < m.data.minlen)){
+		if (!(m.data.common == true && k in common || k in userfilter || k.length < m.data.minlen)){
 			words.push({word:k, value:v});
 		}
 		i++;
-		postMessage({status:"info", data:"culled: "+((i/len)*100).toString().slice(0,5)+"%"});
+		postMessage({status:"info", data:"filtered: "+((i/len)*100).toString().slice(0,5)+"%"});
 	}
 	postMessage({status:"done", data:words})
 };
