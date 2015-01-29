@@ -4,9 +4,11 @@ from StringIO import StringIO
 parser = argparse.ArgumentParser(description="Reddit comment scraper")
 parser.add_argument("-t", "--total", metavar="total number of comments to get")
 parser.add_argument("-r", "--reddit", metavar="subreddit to scrape")
+parser.add_argument("-i", "--id", metavar="identifier")
 args = parser.parse_args()
+id = "1" if not args.id else args.id
 
-r = praw.Reddit("comment scraper bot thing 0.2 by /u/hansolo669")
+r = praw.Reddit("comment scraper bot thing 0.3 by /u/hansolo669: " + id)
 sub = "pics" if not args.reddit else args.reddit
 stream = praw.helpers.comment_stream(r, sub)
 ft = open("comments_"+sub+".txt", "a")

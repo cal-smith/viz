@@ -1,48 +1,59 @@
 <!DOCTYPE html>
+<html>
 <meta charset="utf-8">
-<style>
+<head>
+	<title></title>
+	<style>
+		text {
+		  font: 20px sans-serif;
+		}
 
-text {
-  font: 20px sans-serif;
-}
+		body{
+			font-family: sans-serif;
+		}
 
-body{
-	font-family: sans-serif;
-}
+		.node:first-child circle {
+			fill: rgb(255, 255, 255) !important;
+		}
 
-.node:first-child circle {
-	fill: rgb(255, 255, 255) !important;
-}
+		.node:first-child text {
+			display: none;
+		}
 
-.node:first-child text {
-	display: none;
-}
+		select{
+			-webkit-appearance: none;
+			font-size: 22px;
+			font-weight: bold;
+			width: 200px;
+			padding: 5px;
+			background: url(http://reddit.com/favicon.ico) 96% / 15% no-repeat #eee;
+		}
 
-select{
-	-webkit-appearance: none;
-	font-size: 22px;
-	font-weight: bold;
-	width: 200px;
-	padding: 5px;
-	background: url(http://reddit.com/favicon.ico) 96% / 15% no-repeat #eee;
-}
-
-input[type=number]{
-	width: 40px;
-}
-
-</style>
+		input[type=number]{
+			width: 40px;
+		}
+	</style>
+</head>
 <body>
-<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-<script src="viz.js"></script>
-<h1>Most common words in <select id="sub"><option value="pics" selected>/r/pics</option><option value="askreddit">/r/askreddit</option></select> comments</h1>
-<p id="stats"></p>
-<p id="info"></p>
-<form id="opts">
-	<label>Minimum word length: <input type="number" value="3" id="min"/></label>
-	<label>Number of words: <input type="number" value="20" id="amount"/></label>
-	<label>Allow common words? <input type="checkbox" id="common"/></label>
-	<input type="submit" value="Update" />
-</form>
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<script src="viz.js"></script>
+	<h1>Most common words in 
+		<select id="sub">
+			<option value="pics" selected>/r/pics</option>
+			<option value="askreddit">/r/askreddit</option>
+			<option value="tifu">/r/tifu</option>
+			<option value="gaming">/r/gaming</option>
+			<option value="technology">/r/technology</option>
+			<!--<option value="games">/r/games</option>-->
+		</select>
+	 comments</h1>
+	<p id="stats"></p>
+	<p id="info"></p>
+	<form id="opts">
+		<label>Minimum word length: <input type="number" value="3" id="min"/></label>
+		<label>Number of words: <input type="number" value="20" id="amount"/></label>
+		<label>Allow common words? <input type="checkbox" id="common"/></label>
+		<input type="submit" value="Update" />
+	</form>
 </body>
 </html>
