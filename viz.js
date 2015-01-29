@@ -16,9 +16,7 @@
 					.replace(/www\.?|\.com/g, "")
 					.replace(/\/?(r|u|message)\/\w+/g,"")
 					.replace(/\d+|\\|\/|\&((gt|lt|amp)\;)+/g, " ")//replaces digits and slashes with spaces, also &gt|lt|amp;
-					.replace(/\.|\,|\-|\_|\*|\+|\?\|/g, " ")//replaces various formatting characters with spaces
-					.replace(/\[|\]|\(|\)|\:|\;|\!|\#|\^/g," ")//more formatting character replacement
-					.replace(/\~|\=|\%|\$|\&|\@/g," ")//EVEN MORE
+					.replace(/[^A-Za-z|\'|\"]/g, " ")
 					.replace(/\'|\"/g,"")
 					.trim().split(" ");
 					if (a.length > 0) temp = temp.concat(a.slice(1,a.length));
