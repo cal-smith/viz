@@ -6,13 +6,19 @@
 			for (var i = 0; i < args.length; i++) {
 				if (args[i][0] === 'common') {
 					elem(args[i][0]).checked = args[i][1] === 'true'?true:false;
+				} else if (args[i][0] === 'sub'){
+					for (var j = 0; j < elem('sub').length; j++) {
+						if(elem('sub')[j].value === args[i][1]){
+							elem('sub').selectedIndex = j;
+						}
+					}
 				} else {
 					elem(args[i][0]).value = args[i][1];
 				}
 			}
 		}
 		var counts = {};
-		load("pics");
+		load(elem('sub').value);
 		function load(sub){
 			counts = {};
 			d3.text("comments_"+ sub +".txt", function(err, txt){
@@ -35,6 +41,7 @@
 			});
 		}
 		elem('sub').addEventListener("change", function(event){
+			window.location.hash = window.location.hash.replace(/sub=\w+/, "sub="+event.target.value);
 			load(event.target.value);
 		});
 		elem('opts').addEventListener("submit", function(event){
@@ -44,8 +51,16 @@
 			var amount = elem('amount').value;
 			var common = elem('common').checked;
 			var userfilter = elem('filter').value;
-			window.location.hash = encodeURI("min="+ min +"&amount="+ amount +"&common="+common +"&filter="+ userfilter);
+			window.location.hash = encodeURI("sub="+ elem('sub').value +"&min="+ min +"&amount="+ amount +"&common="+common +"&filter="+ userfilter);
 			plot(counts, min, amount, common);
+		});
+		elem('reset').addEventListener('click', function(event){
+			event.stopPropagation();
+			event.preventDefault();
+			window.location.hash = encodeURI('sub='+elem('sub').value);
+			elem('min').value = 3;
+			elem('amount').value = 20;
+			elem('filter').value = '';
 		});
 	});
 
