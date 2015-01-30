@@ -65,6 +65,7 @@
 			elem('min').value = 3;
 			elem('amount').value = 20;
 			elem('filter').value = '';
+			elem('common').checked = false;
 			plot(counts);
 		});
 	});
