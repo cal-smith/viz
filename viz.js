@@ -1,6 +1,16 @@
 (function(){
 	var workers = [];
 	document.addEventListener("DOMContentLoaded", function(event) {
+		if (window.location.hash) {
+			window.args = window.decodeURI(window.location.hash).slice(1).split('&').map(function(x){return x.split('=');});
+			for (var i = 0; i < args.length; i++) {
+				if (args[i][0] === 'common') {
+					elem(args[i][0]).checked = args[i][1] === 'true'?true:false;
+				} else {
+					elem(args[i][0]).value = args[i][1];
+				}
+			}
+		}
 		var counts = {};
 		load("pics");
 		function load(sub){
@@ -32,7 +42,9 @@
 			event.preventDefault();
 			var min = elem('min').value;
 			var amount = elem('amount').value;
-			var common = !elem("common").checked
+			var common = elem('common').checked;
+			var userfilter = elem('filter').value;
+			window.location.hash = encodeURI("min="+ min +"&amount="+ amount +"&common="+common +"&filter="+ userfilter);
 			plot(counts, min, amount, common);
 		});
 	});
@@ -45,17 +57,17 @@
 			amount = elem('amount').value
 		}
 
-		if (typeof common === "undefined" && !elem("common").checked) { 
-			common = true;
+		if (typeof common === "undefined" && elem("common").checked) { 
+			common = false;
 		} else {
-			common = !elem("common").checked;
+			common = elem("common").checked;
 		}
 
 		if (elem('min').value !== minlen) { minlen = elem('min').value};
 
 		if (elem('filter').value !== ''){
 			values = elem('filter').value.split(" ");
-			for (var i = values.length - 1; i >= 0; i--) {
+			for (var i = 0; i < values.length; i++) {
 				userfilter[values[i]] = values[i];
 			}
 		}
@@ -105,7 +117,7 @@
 			for (var i = 0; i < keys.length; i++) {
 				var k = keys[i];
 				var v = m.data.data[keys[i]];
-				if (!(common == true && k in common || k in userfilter || k.length < m.data.minlen)){
+				if (!(common == false && k in common || k in userfilter || k.length < m.data.minlen)){
 					words.push({word:k, value:v});
 				}
 				i++;
