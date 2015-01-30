@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function(event) {
-	var subs = ["gaming", "pics", "askreddit"];
+	var subs = ["askreddit", "games", "gaming", "iama", "pics", "technology", "tifu"];
 	avg = [];
 	subs.map(function(x){
 		d3.json("comments_"+ x +".json", function(e, json){
