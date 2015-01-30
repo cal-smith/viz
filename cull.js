@@ -32,7 +32,7 @@ onmessage = function(m){
 	var i = 0;
 	for (k in keys) {
 		var v = keys[k];
-		if (!(m.data.common == true && k in common || k in userfilter || k.length < m.data.minlen)){
+		if (!(m.data.common == false && k in common || k in userfilter || k.length < m.data.minlen)){
 			words.push({word:k, value:v});
 		}
 		i++;
