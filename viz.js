@@ -41,7 +41,11 @@
 			});
 		}
 		elem('sub').addEventListener("change", function(event){
-			window.location.hash = window.location.hash.replace(/sub=\w+/, "sub="+event.target.value);
+			if (window.location.hash) {
+				window.location.hash = window.location.hash.replace(/sub=\w+/, "sub="+event.target.value);
+			} else {
+				window.location.hash = "sub="+event.target.value;
+			}
 			load(event.target.value);
 		});
 		elem('opts').addEventListener("submit", function(event){
@@ -61,11 +65,15 @@
 			elem('min').value = 3;
 			elem('amount').value = 20;
 			elem('filter').value = '';
+			plot(counts);
 		});
 	});
 
 	function plot(uniques, minlen, amount, common) {
 		var userfilter = {};
+
+		if (elem('min').value !== minlen) { minlen = elem('min').value};
+		
 		if (typeof amount === "undefined" && elem('amount').value === 20) { 
 			amount = 20; 
 		} else {
@@ -78,7 +86,6 @@
 			common = elem("common").checked;
 		}
 
-		if (elem('min').value !== minlen) { minlen = elem('min').value};
 
 		if (elem('filter').value !== ''){
 			values = elem('filter').value.split(" ");
