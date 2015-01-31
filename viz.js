@@ -21,7 +21,7 @@
 		load(elem('sub').value);
 		function load(sub){
 			counts = {};
-			d3.text("comments_"+ sub +".txt", function(err, txt){
+			d3.text("january/comments_"+ sub +".txt", function(err, txt){
 				info("getting comments");
 				var words = txt.split(/\s|\r\n|\r|\n/);
 				info("formatting text");
