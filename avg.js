@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", function(event) {
-	var subs = ["askreddit", "games", "gaming", "iama", "pics", "technology", "tifu"];
+	var subs = ["askreddit", "askscience", "atheism", "games", "gaming", "iama", "mildlyinteresting", "music", "pics", "science", "technology", "tifu", "worldnews"];
 	avg = [];
 	subs.map(function(x){
-		d3.json("comments_"+ x +".json", function(e, json){
+		d3.json("january/comments_"+ x +".json", function(e, json){
 			console.log(x, json.length);
 			var total_words = 0;
 			for (var i = 0; i < json.length; i++) {
