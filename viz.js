@@ -98,10 +98,6 @@
 		if (document.getElementsByClassName("bubble")[0]){
 			document.getElementsByClassName("bubble")[0].remove();
 		}
-		if (workers[0]) {
-			workers[0].terminate();
-			workers.pop();
-		}
 		info("filtering results");
 		if (!window.Worker) {
 			var words = []
@@ -148,6 +144,10 @@
 			}
 			draw(words);
 		} else {
+			if (workers[0]) {
+				workers[0].terminate();
+				workers.pop();
+			}
 			var worker = new Worker("cull.js");
 			workers.push(worker);
 			worker.postMessage({data:uniques, minlen:minlen, common:common, userfilter:userfilter});
