@@ -1,29 +1,15 @@
 document.addEventListener("DOMContentLoaded", function(event) {
-	var subs = ["askreddit", "askscience", "atheism", "games", "gaming", "iama", "mildlyinteresting", "music", "pics", "science", "technology", "tifu", "worldnews"];
+	//var subs = ["askreddit", "askscience", "atheism", "games", "gaming", "iama", "mildlyinteresting", "music", "pics", "science", "technology", "tifu", "worldnews"];
+	var subs = ["pics"]
 	avg = [];
-	subs.map(function(x){
-		d3.json("january/comments_"+ x +".json", function(e, json){
+	subs.map(function(x){//january
+		d3.json("test/comments_"+ x +".json", function(e, json){
 			console.log(x, json.length);
 			var total_words = 0;
 			for (var i = 0; i < json.length; i++) {
 				var temp = [];
 				var words = json[i].body.split(/\s|\r\n|\r|\n/);
-				words = words.map(function(e){//peliminary culling/data normilization. A lot of pointless stuff gets reduced to "", which is kinda nice.
-					var a = e.toLowerCase()
-					.replace(/[h|f]t+ps?/g, "")//removes http/https/ftp
-					.replace(/www\.?|\.com/g, "")
-					.replace(/\/?(r|u)\/\w+/g,"")//removes /r/ or /u/ and the username/subreddit
-					.replace(/\d+|\\|\/|\&(gt|lt|amp)\;/g, " ")//replaces digits and slashes with spaces, also &gt|lt|amp;
-					.replace(/\.|\,|\-|\_|\*|\+|\?\|/g, " ")//replaces various formatting characters with spaces
-					.replace(/\[|\]|\(|\)|\:|\;|\!|\#|\^/g," ")//more formatting character replacement
-					.replace(/\~|\=|\%|\$|\&|\@/g," ")//EVEN MORE
-					.replace(/\'|\"/g,"")
-					.trim().split(" ");
-					if (a.length > 0) temp = temp.concat(a.slice(1,a.length));
-					return a[0];
-				});
-				words = words.concat(temp);
-				words = words.filter(function(x){ if (x !== "" || x !== " ") { return x; } });
+				words = format(words)
 				json[i].body = words;
 				total_words += json[i].body.length;
 			}
@@ -32,4 +18,24 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			avg.push({avg:total_words/json.length, sub:x});
 		});
 	});
+	function format(words){
+		var temp = [];
+		words = words.map(function(word){//peliminary data normilization. A lot of pointless stuff gets reduced to "" or " ", which is kinda nice.
+			var a = word.toLowerCase()
+			.replace(/[h|f]t+ps?/g, "")//removes http/https/ftp
+			.replace(/www\.?|\.com/g, "")
+			.replace(/\/?(r|u|message)\/\w+/g,"")
+			.replace(/\d+|\\|\/|\&((gt|lt|amp)\;)+/g, " ")//replaces digits and slashes with spaces, also &gt|lt|amp;
+			.replace(/[^A-Za-z|\'|\"]/g, " ")
+			.replace(/\'|\"/g,"")
+			.trim().split(" ");
+			if (a.length > 0) temp = temp.concat(a.slice(1,a.length));
+			return a[0];
+		});
+		words = words.concat(temp);
+		words = words = words.filter(function(x){//filter out spaces
+			if (x !== "" || x !== " ") { return x; }
+		});
+		return words;
+	}
 });
