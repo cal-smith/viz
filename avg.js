@@ -5,15 +5,17 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		d3.json("january/comments_"+ x +".json", function(e, json){
 			console.log(x, json.length);
 			var total_words = 0;
+			var total_score = 0;
 			for (var i = 0; i < json.length; i++) {
 				var temp = [];
 				var words = json[i].body.split(/\s|\r\n|\r|\n/);
 				words = format(words)
 				json[i].body = words;
 				total_words += json[i].body.length;
+				total_score += json[i].score;
 			}
-			console.log(json);
 			console.log("average words per comment:", total_words/json.length);
+			console.log("average score per comment:", total_score/json.length);
 			avg.push({avg:total_words/json.length, sub:x});
 		});
 	});
