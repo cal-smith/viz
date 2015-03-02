@@ -1,5 +1,6 @@
 (function(){
 	var workers = [];
+	var counts = {};
 	document.addEventListener("DOMContentLoaded", function(event) {
 		if (window.location.hash) {
 			window.args = window.decodeURI(window.location.hash).slice(1).split('&').map(function(x){return x.split('=');});
@@ -22,29 +23,6 @@
 					elem(args[i][0]).value = args[i][1];
 				}
 			}
-		}
-		var counts = {};
-		load(elem('sub').value, elem('month').value);
-		function load(sub, month){
-			counts = {};
-			d3.text(month + "/comments_"+ sub +".txt", function(err, txt){
-				info("getting comments");
-				var words = txt.split(/\s|\r\n|\r|\n/);
-				info("formatting text");
-				words = format(words);
-				info("counting words");
-				for (var i = 0; i < words.length; i++) {
-					if (!words[i].match(/\d/)) {
-						if (counts[words[i]] == null) {
-							counts[words[i]] = 1;
-						} else {
-							counts[words[i]]++;
-						}
-					}
-				}
-				elem("stats").textContent = words.length + " individual words, " + Object.keys(counts).length + " unique words";
-				plot(counts, 3, 20);
-			});
 		}
 
 		elem('sub').addEventListener("change", function(event){
@@ -74,7 +52,31 @@
 			update_hash();
 			plot(counts);
 		});
+
+		load(elem('sub').value, elem('month').value);
 	});
+
+	function load(sub, month){
+		counts = {};
+		d3.text(month + "/comments_"+ sub +".txt", function(err, txt){
+			info("getting comments");
+			var words = txt.split(/\s|\r\n|\r|\n/);
+			info("formatting text");
+			words = format(words);
+			info("counting words");
+			for (var i = 0; i < words.length; i++) {
+				if (!words[i].match(/\d/)) {
+					if (counts[words[i]] == null) {
+						counts[words[i]] = 1;
+					} else {
+						counts[words[i]]++;
+					}
+				}
+			}
+			elem("stats").textContent = words.length + " individual words, " + Object.keys(counts).length + " unique words";
+			plot(counts, 3, 20);
+		});
+	}
 
 	function plot(uniques, minlen, amount, common) {
 		var userfilter = {};
@@ -92,7 +94,6 @@
 		} else {
 			common = elem("common").checked;
 		}
-
 
 		if (elem('filter').value !== ''){
 			values = elem('filter').value.split(" ");
@@ -123,6 +124,7 @@
 			}
 		};
 
+		//d3 magic
 		function draw(words){
 			info("sorting");
 			words = words.sort(function(a,b){return b.value - a.value;}).slice(0,amount);
@@ -165,6 +167,7 @@
 		}
 	}
 
+	//helper functions, etc
 	function format(words){
 		var temp = [];
 		words = words.map(function(word){//peliminary data normilization. A lot of pointless stuff gets reduced to "" or " ", which is kinda nice.

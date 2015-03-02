@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 					total_words += json[i].body.length;
 					total_score += json[i].score;
 				}
-				avg.push({avg:total_words/json.length, sub:x});
+				avg.push({avg:total_words/json.length, sub:x, words:total_words});
 				done++;
 				if (done == array.length-1) {
 					callback(avg);
@@ -49,9 +49,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		console.log(avgs);
 		var width = 960,
 		height = 500;
-		var y = d3.scale.linear().range([200, 0]);
+		var y = d3.scale.linear().range([500, 0]);
 		var chart = d3.select("#avg").append("svg").attr("width", width).attr("height", height);
-		y.domain([0, 500]);
+		y.domain([0, 60]);
 		var barWidth = width/avgs.length;
 		var bar = chart.selectAll("g")
 				.data(avgs).enter().append("g")
