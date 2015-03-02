@@ -12,16 +12,22 @@
 							elem('sub').selectedIndex = j;
 						}
 					}
+				} else if (args[i][0] === 'month'){
+					for (var j = 0; j < elem('month').length; j++) {
+						if(elem('month')[j].value === args[i][1]){
+							elem('month').selectedIndex = j;
+						}
+					}
 				} else {
 					elem(args[i][0]).value = args[i][1];
 				}
 			}
 		}
 		var counts = {};
-		load(elem('sub').value);
-		function load(sub){
+		load(elem('sub').value, elem('month').value);
+		function load(sub, month){
 			counts = {};
-			d3.text("january/comments_"+ sub +".txt", function(err, txt){
+			d3.text(month + "/comments_"+ sub +".txt", function(err, txt){
 				info("getting comments");
 				var words = txt.split(/\s|\r\n|\r|\n/);
 				info("formatting text");
@@ -36,36 +42,37 @@
 						}
 					}
 				}
-				elem("stats").textContent = "2000 comments, " + words.length + " individual words, " + Object.keys(counts).length + " unique words";
+				elem("stats").textContent = words.length + " individual words, " + Object.keys(counts).length + " unique words";
 				plot(counts, 3, 20);
 			});
 		}
+
 		elem('sub').addEventListener("change", function(event){
-			if (window.location.hash) {
-				window.location.hash = window.location.hash.replace(/sub=\w+/, "sub="+event.target.value);
-			} else {
-				window.location.hash = "sub="+event.target.value;
-			}
-			load(event.target.value);
+			update_hash();
+			load(elem('sub').value, elem('month').value);
 		});
+
+		elem('month').addEventListener("change", function(event){
+			update_hash();
+			load(elem('sub').value, elem('month').value);
+		});
+
 		elem('opts').addEventListener("submit", function(event){
 			event.stopPropagation();
 			event.preventDefault();
-			var min = elem('min').value;
-			var amount = elem('amount').value;
-			var common = elem('common').checked;
-			var userfilter = elem('filter').value;
-			window.location.hash = encodeURI("sub="+ elem('sub').value +"&min="+ min +"&amount="+ amount +"&common="+common +"&filter="+ userfilter);
+			update_hash();
 			plot(counts, min, amount, common);
 		});
+
 		elem('reset').addEventListener('click', function(event){
 			event.stopPropagation();
 			event.preventDefault();
-			window.location.hash = encodeURI('sub='+elem('sub').value);
+			//window.location.hash = encodeURI('sub='+elem('sub').value);
 			elem('min').value = 3;
 			elem('amount').value = 20;
 			elem('filter').value = '';
 			elem('common').checked = false;
+			update_hash();
 			plot(counts);
 		});
 	});
@@ -221,6 +228,16 @@
 			if (x !== "" || x !== " ") { return x; }
 		});
 		return words;
+	}
+
+	function update_hash(){
+		var min = elem('min').value;
+		var amount = elem('amount').value;
+		var common = elem('common').checked;
+		var userfilter = elem('filter').value;
+		var sub = elem('sub').value;
+		var month = elem('month').value;
+		window.location.hash = encodeURI("sub="+ sub + "&month=" + month + "&min="+ min +"&amount="+ amount +"&common="+common +"&filter="+ userfilter);
 	}
 
 	function elem(elem){
