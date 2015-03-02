@@ -106,12 +106,12 @@
 		}
 
 		info("filtering results");
+		//the secret sauce - webworkers
 		if (workers[0]) {
 			workers[0].terminate();
 			workers.pop();
 		}
-
-		var worker = new Worker("cull.js");
+		var worker = new Worker("filter.js");
 		workers.push(worker);
 		worker.postMessage({data:uniques, minlen:minlen, common:common, userfilter:userfilter});
 		worker.onmessage = function(m){
@@ -122,7 +122,7 @@
 				draw(m.data.data);
 			}
 		};
-		
+
 		function draw(words){
 			info("sorting");
 			words = words.sort(function(a,b){return b.value - a.value;}).slice(0,amount);
