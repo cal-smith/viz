@@ -8,7 +8,7 @@
 		  font: 20px sans-serif;
 		}
 
-		body{
+		body {
 			font-family: sans-serif;
 		}
 
@@ -20,7 +20,7 @@
 			display: none;
 		}
 
-		select{
+		select {
 			-webkit-appearance: none;
 			font-size: 22px;
 			font-weight: bold;
@@ -29,7 +29,12 @@
 			background: url(http://reddit.com/favicon.ico) 96% / 15% no-repeat #eee;
 		}
 
-		input[type=number]{
+		select#month {
+			background: #eee;
+			width: 120px;
+		}
+
+		input[type=number] {
 			width: 40px;
 		}
 	</style>
@@ -39,22 +44,26 @@
 	<script src="viz.js"></script>
 	<h1>Most common words in 
 		<select id="sub">
-			<option value="askreddit" selected>/r/askreddit</option> <!-- jan 10 -->
-			<option value="askscience">/r/askscience</option><!-- jan 30 -->
-			<option value="atheism">/r/atheism</option><!-- jan 30 -->
-			<option value="games">/r/games</option><!-- jan 30 -->
-			<option value="gaming">/r/gaming</option><!-- jan 29 -->
-			<option value="iama">/r/IAmA</option><!-- jan 30 -->
-			<option value="mildlyinteresting">/r/mildlyinteresting</option><!-- jan 30 -->
-			<option value="music">/r/music</option><!-- jan 30 -->
-			<option value="pics">/r/pics</option> <!-- jan 10 -->
-			<option value="science">/r/science</option><!-- jan 30 -->
-			<option value="technology">/r/technology</option><!-- jan 29 -->
-			<option value="tifu">/r/tifu</option> <!-- jan 29 -->
-			<option value="worldnews">/r/worldnews</option><!-- jan 30 -->
-
+			<option value="askreddit" selected>/r/askreddit</option>
+			<option value="askscience">/r/askscience</option>
+			<option value="atheism">/r/atheism</option>
+			<option value="games">/r/games</option>
+			<option value="gaming">/r/gaming</option>
+			<option value="iama">/r/IAmA</option>
+			<option value="mildlyinteresting">/r/mildlyinteresting</option>
+			<option value="music">/r/music</option>
+			<option value="pics">/r/pics</option> 
+			<option value="science">/r/science</option>
+			<option value="technology">/r/technology</option>
+			<option value="tifu">/r/tifu</option> 
+			<option value="worldnews">/r/worldnews</option>
 		</select>
-	 comments</h1>
+	 comments, from
+	 	<select id="month">
+	 		<option value="january">January</option>
+	 		<option value="february">February</option>
+	 	</select>
+	 </h1>
 	<p id="stats"></p>
 	<p id="info"></p>
 	<form id="opts">

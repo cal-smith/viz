@@ -1,22 +1,30 @@
 document.addEventListener("DOMContentLoaded", function(event) {
-	var subs = ["askreddit", "askscience", "atheism", "games", "gaming", "iama", "mildlyinteresting", "music", "pics", "science", "technology", "tifu", "worldnews"];
-	avg = [];
-	subs.map(function(x){
-		d3.json("january/comments_"+ x +".json", function(e, json){
-			console.log(x, json.length);
-			var total_words = 0;
-			for (var i = 0; i < json.length; i++) {
-				var temp = [];
-				var words = json[i].body.split(/\s|\r\n|\r|\n/);
-				words = format(words)
-				json[i].body = words;
-				total_words += json[i].body.length;
-			}
-			console.log(json);
-			console.log("average words per comment:", total_words/json.length);
-			avg.push({avg:total_words/json.length, sub:x});
+	subs = ["askreddit", "askscience", "atheism", "games", "gaming", "iama", "mildlyinteresting", "music", "pics", "science", "technology", "tifu", "worldnews"];
+	load(subs, draw);
+	function load(subs, callback) {
+		avg = [];
+		subs.forEach(function(x, index, array){
+			done = 0;
+			d3.json("january/comments_"+ x +".json", function(e, json){
+				var total_words = 0;
+				var total_score = 0;
+				for (var i = 0; i < json.length; i++) {
+					var temp = [];
+					var words = json[i].body.split(/\s|\r\n|\r|\n/);
+					words = format(words)
+					json[i].body = words;
+					total_words += json[i].body.length;
+					total_score += json[i].score;
+				}
+				avg.push({avg:total_words/json.length, sub:x, words:total_words});
+				done++;
+				if (done == array.length-1) {
+					callback(avg);
+				}
+			});
 		});
-	});
+	}
+
 	function format(words){
 		var temp = [];
 		words = words.map(function(word){//peliminary data normilization. A lot of pointless stuff gets reduced to "" or " ", which is kinda nice.
@@ -36,5 +44,25 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			if (x !== "" || x !== " ") { return x; }
 		});
 		return words;
+	}
+	function draw(avgs){
+		console.log(avgs);
+		var width = 960,
+		height = 500;
+		var y = d3.scale.linear().range([500, 0]);
+		var chart = d3.select("#avg").append("svg").attr("width", width).attr("height", height);
+		y.domain([0, 60]);
+		var barWidth = width/avgs.length;
+		var bar = chart.selectAll("g")
+				.data(avgs).enter().append("g")
+				.attr("transform", function(d, i) { return "translate(" + i * barWidth + ",0)"; });
+		bar.append("rect")
+			.attr("y", function(d) { return y(d.avg);})
+			.attr("height", function(d) { return height - y(d.avg); })
+			.attr("width", barWidth - 1);
+		bar.append("text")
+			.attr("x", barWidth / 2).attr("y", function(d) { return y(d.avg) + 3; })
+			.attr("dy", ".75em")
+			.text(function(d) { return d.sub; });
 	}
 });
