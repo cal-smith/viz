@@ -10,7 +10,7 @@ id = "1" if not args.id else args.id
 
 r = praw.Reddit(user_agent="comment scraper bot thing 1.5 by /u/hansolo669: " + id)
 sub = "pics" if not args.reddit else args.reddit
-total = 2000 if not args.total else args.total
+total = 2000 if not args.total else int(args.total)
 
 ft = open("comments_"+sub+".txt", "a")
 fj = open("comments_"+sub+".json", "w")
@@ -32,7 +32,6 @@ for submission in top:
 		print "\r {} comments".format(i),
 		if i == total:
 			break
-
 io.write("]")
 fj.write(io.getvalue())
 io.close()
