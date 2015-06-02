@@ -22,7 +22,10 @@ top = r.get_subreddit(sub).get_top_from_month(limit=100)
 for submission in top:
 	if i == total:
 		break
-	submission.replace_more_comments(1)
+	try:
+		submission.replace_more_comments(1)
+	except AssertionError as e:
+		print e
 	tree = praw.helpers.flatten_tree(submission.comments)
 	for comment in tree:
 		ft.write(comment.body.encode('ascii', 'ignore')+" ")
